@@ -36,6 +36,7 @@ $ npm install
 
 ```bash
 # development
+$ docker-compose up -d
 $ npm run start
 
 # watch mode
