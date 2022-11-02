@@ -1,0 +1,22 @@
+version: "3"
+
+networks:
+  net-nest-teslo-shop:
+
+volumes:
+  db-nest-teslo-shop:
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - ${DB_PORT}:5432
+    volumes:
+      - db-nest-teslo-shop:/var/lib/postgresql/data
+    networks:
+      - net-nest-teslo-shop
