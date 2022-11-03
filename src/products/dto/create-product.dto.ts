@@ -23,6 +23,7 @@ export class CreateProductDto {
   description: string;
 
   @IsString()
+  @IsOptional()
   @MinLength(1)
   slug: string;
 
