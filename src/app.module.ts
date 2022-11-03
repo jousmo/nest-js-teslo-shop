@@ -3,6 +3,7 @@ import { ConfigModule, ConfigType } from '@nestjs/config';
 import { JoiConfig } from './config/joi.config';
 import config from './config/env.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       },
       inject: [config.KEY],
     }),
+    ProductsModule,
   ],
   controllers: [],
   providers: [],
