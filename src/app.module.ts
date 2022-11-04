@@ -4,6 +4,7 @@ import { JoiConfig } from './config/joi.config';
 import config from './config/env.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ProductsModule } from './products/products.module';
       inject: [config.KEY],
     }),
     ProductsModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],
