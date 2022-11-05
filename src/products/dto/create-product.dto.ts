@@ -39,4 +39,9 @@ export class CreateProductDto {
   @IsString()
   @IsEnum(['men', 'women', 'unisex', 'kid'])
   gender: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags: string[];
 }
