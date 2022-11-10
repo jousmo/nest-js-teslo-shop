@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
+import { Product, ProductImage } from './entities';
 import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
@@ -20,11 +20,20 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(ProductImage)
+    private readonly productImageRepository: Repository<ProductImage>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     try {
-      const product = await this.productRepository.create(createProductDto);
+      const { images = [], ...productDetails } = createProductDto;
+      const newImages = images.map((image) =>
+        this.productImageRepository.create({ url: image }),
+      );
+      const product = await this.productRepository.create({
+        ...productDetails,
+        images: newImages,
+      });
       await this.productRepository.save(product);
       return product;
     } catch (error) {
@@ -34,7 +43,10 @@ export class ProductsService {
 
   findAll(paginationDto: PaginationDto): Promise<Product[]> {
     const { limit: take = 10, offset: skip = 0 } = paginationDto;
-    return this.productRepository.find({ take, skip });
+    return this.productRepository.find({
+      take,
+      skip,
+    });
   }
 
   async findOne(term: string): Promise<Product> {
@@ -64,6 +76,7 @@ export class ProductsService {
       const product: Product = await this.productRepository.preload({
         id: uuid,
         ...updateProductDto,
+        images: [],
       });
 
       return this.productRepository.save(product);
