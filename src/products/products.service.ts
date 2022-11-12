@@ -46,18 +46,28 @@ export class ProductsService {
     return this.productRepository.find({
       take,
       skip,
+      // is not requires, use eager in entity
+      relations: {
+        images: true,
+      },
     });
   }
 
   async findOne(term: string): Promise<Product> {
-    const queryBuilder = this.productRepository.createQueryBuilder();
-    const product: Product = await queryBuilder
-      .where('id =:uuid OR title =:title OR slug =:slug', {
-        uuid: isUUID(term) ? term : undefined,
-        title: term,
-        slug: term,
-      })
-      .getOne();
+    let product: Product;
+
+    if (isUUID(term)) {
+      product = await this.productRepository.findOneBy({ id: term });
+    } else {
+      const queryBuilder = this.productRepository.createQueryBuilder('product');
+      product = await queryBuilder
+        .where('title =:title OR slug =:slug', {
+          title: term,
+          slug: term,
+        })
+        .leftJoinAndSelect('product.images', 'productImages')
+        .getOne();
+    }
 
     if (!product) {
       throw new NotFoundException(`Product ${term} not found`);
