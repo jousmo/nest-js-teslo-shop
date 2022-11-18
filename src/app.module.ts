@@ -28,7 +28,5 @@ import { FilesModule } from './files/files.module';
     SeedModule,
     FilesModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

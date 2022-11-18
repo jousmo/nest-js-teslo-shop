@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Controller,
   Post,
   UploadedFile,
@@ -35,12 +34,7 @@ export class FilesController {
     }),
   )
   uploadProductImage(@UploadedFile() file: Express.Multer.File) {
-    if (!file) throw new BadRequestException('Make sure that file is an image');
-
-    const secureUrl = `${file.filename}`;
-
-    return {
-      secureUrl,
-    };
+    const secureUrl = this.filesService.uploadProductImage(file);
+    return { secureUrl };
   }
 }

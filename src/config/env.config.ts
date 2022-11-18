@@ -5,6 +5,7 @@ const environment = process.env.NODE_ENV || 'dev';
 export default registerAs('config', () => ({
   environment,
   port: +process.env.PORT,
+  hostApi: process.env.HOST_API,
   database: {
     type: process.env.DB_DIALECT,
     host: process.env.DB_HOST,
