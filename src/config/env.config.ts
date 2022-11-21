@@ -6,6 +6,7 @@ export default registerAs('config', () => ({
   environment,
   port: +process.env.PORT,
   hostApi: process.env.HOST_API,
+  jwtSecret: process.env.JWT_SECRET,
   database: {
     type: process.env.DB_DIALECT,
     host: process.env.DB_HOST,

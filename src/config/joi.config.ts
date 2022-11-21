@@ -10,4 +10,5 @@ export const JoiConfig = Joi.object({
   DB_PASSWORD: Joi.string().required(),
   DB_PORT: Joi.number().required(),
   HOST_API: Joi.string().required(),
+  JWT_SECRET: Joi.string().required(),
 });
