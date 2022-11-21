@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -33,7 +33,7 @@ export class AuthService {
       });
       await this.userRepository.save(user);
       delete user.password;
-      return { ...user, token: this.getJwtToken({ email: user.email }) };
+      return { ...user, token: this.getJwtToken({ id: user.id }) };
     } catch (error) {
       this.handleDBExceptions(error);
     }
@@ -44,7 +44,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true },
+      select: { email: true, password: true, id: true },
     });
 
     if (!user)
@@ -53,11 +53,13 @@ export class AuthService {
     if (!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('Credentials are not valid (password)');
 
-    return { ...user, token: this.getJwtToken({ email: user.email }) };
+    return { ...user, token: this.getJwtToken({ id: user.id }) };
   }
 
-  async checkIfUserExistAndIsActive(email: string): Promise<User> {
-    const user = await this.userRepository.findOneBy({ email });
+  async checkIfUserExistAndIsActive(id: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id: Equal(id) },
+    });
 
     if (!user) throw new UnauthorizedException('Token not valid');
 
