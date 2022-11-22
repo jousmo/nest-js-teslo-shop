@@ -56,6 +56,13 @@ export class AuthService {
     return { ...user, token: this.getJwtToken({ id: user.id }) };
   }
 
+  async checkAuthStatus(user: User) {
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id }),
+    };
+  }
+
   async checkIfUserExistAndIsActive(id: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id: Equal(id) },
