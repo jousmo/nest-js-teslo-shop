@@ -12,6 +12,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductImage } from './entities';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -25,7 +26,10 @@ export class ProductsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createProductDto: CreateProductDto): Promise<Product> {
+  async create(
+    createProductDto: CreateProductDto,
+    user: User,
+  ): Promise<Product> {
     try {
       const { images = [], ...productDetails } = createProductDto;
       const newImages = images.map((image) =>
@@ -34,6 +38,7 @@ export class ProductsService {
       const product = await this.productRepository.create({
         ...productDetails,
         images: newImages,
+        user,
       });
       await this.productRepository.save(product);
       return product;
@@ -80,6 +85,7 @@ export class ProductsService {
   async update(
     uuid: string,
     updateProductDto: UpdateProductDto,
+    user: User,
   ): Promise<Product> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -92,6 +98,7 @@ export class ProductsService {
 
       const product: Product = await this.productRepository.preload({
         id: uuid,
+        user,
         ...toUpdateProduct,
       });
 
