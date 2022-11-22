@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import config from './config/env.config';
 
@@ -17,6 +18,16 @@ import config from './config/env.config';
       },
     }),
   );
+
+  const configSwagger = new DocumentBuilder()
+    .setTitle('Teslo API')
+    .setDescription('Teslo shop endpoints')
+    .setVersion('2.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, configSwagger);
+  SwaggerModule.setup('api/v2/docs', app, document);
+
   const configService: ConfigType<typeof config> = app.get(config.KEY);
 
   await app.listen(configService.port);
